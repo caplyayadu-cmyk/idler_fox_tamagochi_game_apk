@@ -12,13 +12,13 @@ This repository contains release instructions and small release metadata only. T
 
 1. Back up the signing key outside both repositories. Keep the same signing certificate as the installed game.
 2. Increase `version/code` in the main project's `export_presets.cfg`; set `version/name` and update `CHANGELOG.md` here.
-3. From this directory run:
+3. Keep the Android build template installed. The release script temporarily injects the small native `UpdaterBridge` into the generated Gradle build, exports the app, and restores the template and signing preset afterward. From this directory run:
 
    ```powershell
    .\prepare_release.ps1 -Tag v0.2.1 -GodotExe "C:\path\to\Godot_v4.7.2-stable_win64_console.exe"
    ```
 
-   The script exports the APK, checks package/version/signature metadata, calculates its size and SHA-256, writes `latest.json`, creates a draft release, and attaches both files.
+   The script exports the APK, checks package/version and the expected signing certificate, calculates its size and SHA-256, writes `latest.json`, creates a draft release, and attaches both files. It places the installable APK at `idler_fox_tamagochi_game_apk/idlerfox.apk`; that file is ignored by Git and uploaded only as a release asset.
 4. Review the GitHub draft and verify release asset URLs, size, checksum, package name and version. Install the APK over a test copy of the previous build and verify that save data and the trade journal remain.
 5. Publish only after the update and install flow is checked:
 
