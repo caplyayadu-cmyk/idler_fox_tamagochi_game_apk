@@ -9,6 +9,7 @@ $ErrorActionPreference = 'Stop'
 $releaseDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectDir = Split-Path -Parent $releaseDir
 $preset = Get-Content (Join-Path $projectDir 'export_presets.cfg') -Raw
+$projectConfig = Get-Content (Join-Path $projectDir 'project.godot') -Raw
 $versionMatch = [regex]::Match($preset, '(?m)^version/code=(\d+)\s*$')
 $nameMatch = [regex]::Match($preset, '(?m)^version/name="([^"]+)"\s*$')
 $packageMatch = [regex]::Match($preset, '(?m)^package/unique_name="([^"]+)"\s*$')
@@ -16,6 +17,7 @@ if (!$versionMatch.Success -or !$nameMatch.Success -or !$packageMatch.Success) {
 $versionCode = [int]$versionMatch.Groups[1].Value
 $versionName = $nameMatch.Groups[1].Value
 $packageName = $packageMatch.Groups[1].Value
+if ($projectConfig -notmatch "(?m)^config/version_code=$versionCode\s*$") { throw 'project.godot config/version_code must match Android export preset version/code.' }
 if ($Tag -ne "v$versionName") { throw "Tag $Tag does not match export preset version $versionName." }
 if (!(Test-Path -LiteralPath $ReleaseKeystore)) { throw "Signing key was not found: $ReleaseKeystore. Keep it outside both repositories and make a protected backup." }
 $apk = Join-Path $releaseDir 'idlerfox.apk'

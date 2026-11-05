@@ -15,7 +15,7 @@ This repository contains release instructions and small release metadata only. T
 3. From this directory run:
 
    ```powershell
-   .\prepare_release.ps1 -Tag v0.2.0 -GodotExe "C:\path\to\Godot_v4.7.2-stable_win64_console.exe"
+   .\prepare_release.ps1 -Tag v0.2.1 -GodotExe "C:\path\to\Godot_v4.7.2-stable_win64_console.exe"
    ```
 
    The script exports the APK, checks package/version/signature metadata, calculates its size and SHA-256, writes `latest.json`, creates a draft release, and attaches both files.
@@ -23,7 +23,7 @@ This repository contains release instructions and small release metadata only. T
 5. Publish only after the update and install flow is checked:
 
    ```powershell
-   .\publish_release.ps1 -Tag v0.2.0
+   .\publish_release.ps1 -Tag v0.2.1
    ```
 
 Use `publish_release.ps1 -Tag vX.Y.Z` only after the draft has been reviewed. Published assets are immutable; make a new tag and release for corrections.

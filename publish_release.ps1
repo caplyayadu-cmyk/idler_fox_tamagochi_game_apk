@@ -20,6 +20,10 @@ $remoteApk = $release.assets | Where-Object name -eq 'idlerfox.apk' | Select-Obj
 if ([int64]$remoteApk.size -ne $localSize -or $remoteApk.digest -ne "sha256:$localHash") { throw 'Draft APK asset size or SHA-256 differs from the local release APK.' }
 gh release edit $Tag --draft=false
 if ($LASTEXITCODE -ne 0) { throw 'Publishing GitHub Release failed.' }
-$published = Invoke-RestMethod -Uri 'https://github.com/caplyayadu-cmyk/idler_fox_tamagochi_game_apk/releases/latest/download/latest.json'
+$manifestCopy = Join-Path $env:TEMP 'idlerfox-published-latest.json'
+curl.exe --fail --location --silent --show-error --retry 3 'https://github.com/caplyayadu-cmyk/idler_fox_tamagochi_game_apk/releases/latest/download/latest.json' --output $manifestCopy
+if ($LASTEXITCODE -ne 0) { throw 'Published release, but could not retrieve stable latest.json for post-publication verification.' }
+$published = Get-Content $manifestCopy -Raw | ConvertFrom-Json
+Remove-Item -LiteralPath $manifestCopy -Force
 if ($published.version_code -ne $data.version_code -or $published.apk_url -ne $data.apk_url -or $published.sha256 -ne $data.sha256) { throw 'Published stable manifest does not match the reviewed release.' }
 Write-Host "Published $Tag. Stable latest.json is now served by GitHub Releases."
