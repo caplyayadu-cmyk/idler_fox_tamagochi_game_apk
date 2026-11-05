@@ -1,0 +1,5 @@
+*.apk
+latest.json
+*.part
+*.tmp
+*.log
