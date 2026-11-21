@@ -3,3 +3,11 @@ latest.json
 *.part
 *.tmp
 *.log
+
+*.keystore
+*.jks
+*.p12
+*.pfx
+.env
+.env.*
+.stage-*/

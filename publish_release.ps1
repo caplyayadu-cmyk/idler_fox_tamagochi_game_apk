@@ -6,7 +6,7 @@ $apk = Join-Path $releaseDir 'idlerfox.apk'
 $manifest = Join-Path $releaseDir 'latest.json'
 if (!(Test-Path $apk) -or !(Test-Path $manifest)) { throw 'Prepare and review the APK and latest.json first.' }
 $data = Get-Content $manifest -Raw | ConvertFrom-Json
-if ($data.apk_url -notmatch "/releases/download/$([regex]::Escape($Tag))/idlerfox\.apk$") { throw 'Manifest APK URL does not match this release tag.' }
+if ($data.apk_url -cne "https://github.com/$releaseRepo/releases/download/$Tag/idlerfox.apk") { throw 'Manifest APK URL does not match this release tag.' }
 gh release view $Tag --repo $releaseRepo --json isDraft,assets | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "Draft release $Tag was not found." }
 $release = gh release view $Tag --repo $releaseRepo --json isDraft,tagName,assets | ConvertFrom-Json
@@ -19,6 +19,12 @@ $names = @($release.assets | ForEach-Object name)
 if ($names -notcontains 'idlerfox.apk' -or $names -notcontains 'latest.json') { throw 'Draft release must already contain idlerfox.apk and latest.json. Verify those assets before publishing.' }
 $remoteApk = $release.assets | Where-Object name -eq 'idlerfox.apk' | Select-Object -First 1
 if ([int64]$remoteApk.size -ne $localSize -or $remoteApk.digest -ne "sha256:$localHash") { throw 'Draft APK asset size or SHA-256 differs from the local release APK.' }
+$remoteManifest = $release.assets | Where-Object name -ceq 'latest.json' | Select-Object -First 1
+$manifestSize = (Get-Item -LiteralPath $manifest).Length
+$manifestHash = (Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash.ToLowerInvariant()
+if ([int64]$remoteManifest.size -ne $manifestSize -or $remoteManifest.digest -cne "sha256:$manifestHash") {
+    throw 'Draft latest.json differs from the local reviewed manifest. Release remains a draft.'
+}
 gh release edit $Tag --repo $releaseRepo --draft=false
 if ($LASTEXITCODE -ne 0) { throw 'Publishing GitHub Release failed.' }
 $manifestCopy = Join-Path $env:TEMP 'idlerfox-published-latest.json'
