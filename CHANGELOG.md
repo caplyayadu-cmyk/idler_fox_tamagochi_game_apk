@@ -1,3 +1,7 @@
+## v0.3.23
+
+- Исправлено отображение цен в магазине: подписи сохраняют читаемую высоту во вкладках заботы, улучшений, одежды и коллайдера.
+
 ## v0.3.22
 
 - Unified game and development terminology: passive production is labeled «источники счастья», and B-800/B-1000 are «усилители тапов». Economy, save data, and internal compatibility identifiers are unchanged.
