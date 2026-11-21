@@ -1,3 +1,7 @@
+## v0.3.22
+
+- Unified game and development terminology: passive production is labeled «источники счастья», and B-800/B-1000 are «усилители тапов». Economy, save data, and internal compatibility identifiers are unchanged.
+
 ## v0.3.21
 
 - Кнопки покупки, дефолта и надевания возвращены в одну строку с покупаемой позицией. На узком экране адаптируются ширина кнопок и иконки, а текст переносится внутри своей колонки.
